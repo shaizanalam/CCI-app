@@ -25,6 +25,7 @@ import { Route as AdminStudentsRouteImport } from './routes/admin.students'
 import { Route as AdminNotificationsRouteImport } from './routes/admin.notifications'
 import { Route as AppSubjectsIndexRouteImport } from './routes/app.subjects.index'
 import { Route as AppSubjectsSubjectIdRouteImport } from './routes/app.subjects.$subjectId'
+import { Route as AdminSubjectsSubjectIdRouteImport } from './routes/admin.subjects.$subjectId'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -106,6 +107,11 @@ const AppSubjectsSubjectIdRoute = AppSubjectsSubjectIdRouteImport.update({
   path: '/subjects/$subjectId',
   getParentRoute: () => AppRoute,
 } as any)
+const AdminSubjectsSubjectIdRoute = AdminSubjectsSubjectIdRouteImport.update({
+  id: '/$subjectId',
+  path: '/$subjectId',
+  getParentRoute: () => AdminSubjectsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -116,12 +122,13 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/students': typeof AdminStudentsRoute
-  '/admin/subjects': typeof AdminSubjectsRoute
+  '/admin/subjects': typeof AdminSubjectsRouteWithChildren
   '/admin/upload': typeof AdminUploadRoute
   '/app/notifications': typeof AppNotificationsRoute
   '/app/profile': typeof AppProfileRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
+  '/admin/subjects/$subjectId': typeof AdminSubjectsSubjectIdRoute
   '/app/subjects/$subjectId': typeof AppSubjectsSubjectIdRoute
   '/app/subjects/': typeof AppSubjectsIndexRoute
 }
@@ -132,12 +139,13 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/students': typeof AdminStudentsRoute
-  '/admin/subjects': typeof AdminSubjectsRoute
+  '/admin/subjects': typeof AdminSubjectsRouteWithChildren
   '/admin/upload': typeof AdminUploadRoute
   '/app/notifications': typeof AppNotificationsRoute
   '/app/profile': typeof AppProfileRoute
   '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexRoute
+  '/admin/subjects/$subjectId': typeof AdminSubjectsSubjectIdRoute
   '/app/subjects/$subjectId': typeof AppSubjectsSubjectIdRoute
   '/app/subjects': typeof AppSubjectsIndexRoute
 }
@@ -151,12 +159,13 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/students': typeof AdminStudentsRoute
-  '/admin/subjects': typeof AdminSubjectsRoute
+  '/admin/subjects': typeof AdminSubjectsRouteWithChildren
   '/admin/upload': typeof AdminUploadRoute
   '/app/notifications': typeof AppNotificationsRoute
   '/app/profile': typeof AppProfileRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
+  '/admin/subjects/$subjectId': typeof AdminSubjectsSubjectIdRoute
   '/app/subjects/$subjectId': typeof AppSubjectsSubjectIdRoute
   '/app/subjects/': typeof AppSubjectsIndexRoute
 }
@@ -177,6 +186,7 @@ export interface FileRouteTypes {
     | '/app/profile'
     | '/admin/'
     | '/app/'
+    | '/admin/subjects/$subjectId'
     | '/app/subjects/$subjectId'
     | '/app/subjects/'
   fileRoutesByTo: FileRoutesByTo
@@ -193,6 +203,7 @@ export interface FileRouteTypes {
     | '/app/profile'
     | '/admin'
     | '/app'
+    | '/admin/subjects/$subjectId'
     | '/app/subjects/$subjectId'
     | '/app/subjects'
   id:
@@ -211,6 +222,7 @@ export interface FileRouteTypes {
     | '/app/profile'
     | '/admin/'
     | '/app/'
+    | '/admin/subjects/$subjectId'
     | '/app/subjects/$subjectId'
     | '/app/subjects/'
   fileRoutesById: FileRoutesById
@@ -338,13 +350,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSubjectsSubjectIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/admin/subjects/$subjectId': {
+      id: '/admin/subjects/$subjectId'
+      path: '/$subjectId'
+      fullPath: '/admin/subjects/$subjectId'
+      preLoaderRoute: typeof AdminSubjectsSubjectIdRouteImport
+      parentRoute: typeof AdminSubjectsRoute
+    }
   }
 }
+
+interface AdminSubjectsRouteChildren {
+  AdminSubjectsSubjectIdRoute: typeof AdminSubjectsSubjectIdRoute
+}
+
+const AdminSubjectsRouteChildren: AdminSubjectsRouteChildren = {
+  AdminSubjectsSubjectIdRoute: AdminSubjectsSubjectIdRoute,
+}
+
+const AdminSubjectsRouteWithChildren = AdminSubjectsRoute._addFileChildren(
+  AdminSubjectsRouteChildren,
+)
 
 interface AdminRouteChildren {
   AdminNotificationsRoute: typeof AdminNotificationsRoute
   AdminStudentsRoute: typeof AdminStudentsRoute
-  AdminSubjectsRoute: typeof AdminSubjectsRoute
+  AdminSubjectsRoute: typeof AdminSubjectsRouteWithChildren
   AdminUploadRoute: typeof AdminUploadRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
@@ -352,7 +383,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminNotificationsRoute: AdminNotificationsRoute,
   AdminStudentsRoute: AdminStudentsRoute,
-  AdminSubjectsRoute: AdminSubjectsRoute,
+  AdminSubjectsRoute: AdminSubjectsRouteWithChildren,
   AdminUploadRoute: AdminUploadRoute,
   AdminIndexRoute: AdminIndexRoute,
 }

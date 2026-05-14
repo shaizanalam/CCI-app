@@ -5,14 +5,12 @@ interface Props {
 }
 
 /**
- * Renders a diagonally repeated watermark overlay on top of any positioned parent.
- * Uses pointer-events: none so it never blocks scrolling/zoom of the underlying content.
+ * Diagonally repeated watermark overlay. pointer-events: none so scrolling/zoom still work.
  */
 export function Watermark({ watermark }: Props) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // best-effort: attempt to deter screen capture API usage / right-click
     const block = (e: Event) => e.preventDefault();
     const el = ref.current;
     if (!el) return;
@@ -27,15 +25,15 @@ export function Watermark({ watermark }: Props) {
       className="pointer-events-none absolute inset-0 select-none overflow-hidden"
       style={{
         background:
-          "repeating-linear-gradient(-30deg, transparent 0 120px, rgba(31,41,55,0.06) 120px 121px)",
+          "repeating-linear-gradient(-28deg, transparent 0 140px, rgba(91, 91, 214, 0.04) 140px 141px)",
       }}
     >
-      <div className="absolute inset-0 flex flex-wrap content-around justify-around opacity-30">
-        {Array.from({ length: 24 }).map((_, i) => (
+      <div className="absolute inset-0 flex flex-wrap content-around justify-around opacity-[0.22]">
+        {Array.from({ length: 28 }).map((_, i) => (
           <span
             key={i}
-            className="rotate-[-30deg] whitespace-nowrap text-xs font-semibold text-foreground/40"
-            style={{ width: "33%", textAlign: "center", padding: "32px 0" }}
+            className="rotate-[-28deg] whitespace-nowrap text-[11px] font-semibold tracking-wide text-primary/50"
+            style={{ width: "32%", textAlign: "center", padding: "36px 0" }}
           >
             {watermark}
           </span>

@@ -1,15 +1,20 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, type ReactNode } from "react";
 import { useSession } from "@/hooks/use-session";
 import { NeoCard } from "@/components/neo/NeoCard";
 import { NeoButton } from "@/components/neo/NeoButton";
-import { BookOpen, ShieldCheck, Sparkles } from "lucide-react";
+import { BrandMark } from "@/components/layout/PremiumHeader";
+import { BookOpen, ShieldCheck } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Lumen — Premium notes for Class 9–12" },
-      { name: "description", content: "Your coaching institute's private library of subjects, PDFs and notifications. Calm, fast, mobile-first." },
+      { title: "CCI Notes — Class 9–12 coaching library" },
+      {
+        name: "description",
+        content:
+          "Private learning platform for coaching institute students. Class-isolated subjects, materials and notifications.",
+      },
     ],
   }),
   component: Landing,
@@ -27,50 +32,68 @@ function Landing() {
   }, [loading, session, role, profile, navigate]);
 
   return (
-    <div className="min-h-screen bg-background px-5 py-10">
+    <div className="min-h-dvh bg-background px-5 py-12">
       <div className="mx-auto max-w-md">
-        <div className="mb-8 flex items-center gap-3">
-          <div className="neo-surface-sm flex h-12 w-12 items-center justify-center text-primary">
-            <Sparkles className="h-6 w-6" />
-          </div>
+        <div className="mb-10 flex items-center gap-4">
+          <BrandMark className="h-14 w-14 rounded-3xl" />
           <div>
-            <h1 className="text-xl font-bold">Lumen</h1>
-            <p className="text-xs text-muted-foreground">Coaching notes, simplified.</p>
+            <h1 className="font-display text-xl font-bold text-foreground">CCI Notes</h1>
+            <p className="text-sm text-muted-foreground">Coaching notes, simplified.</p>
           </div>
         </div>
 
-        <NeoCard className="mb-6">
-          <h2 className="text-2xl font-bold leading-tight">Premium notes for your class.</h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Class 9 to 12. PDFs, images and important alerts — all in one calm place, just for your batch.
+        <NeoCard className="mb-8 p-6 sm:p-8">
+          <h2 className="font-display text-2xl font-bold leading-tight text-foreground">
+            Premium notes for your class.
+          </h2>
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+            Classes 9 to 12. PDFs, images, and institute alerts — calm, fast, and mobile-first.
           </p>
-          <div className="mt-6 flex gap-3">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link to="/login" className="flex-1">
-              <NeoButton variant="primary" className="w-full">Sign in</NeoButton>
+              <NeoButton variant="primary" className="w-full min-h-[52px]">
+                Sign in
+              </NeoButton>
             </Link>
             <Link to="/signup" className="flex-1">
-              <NeoButton className="w-full">Register</NeoButton>
+              <NeoButton className="w-full min-h-[52px]">Register</NeoButton>
             </Link>
           </div>
         </NeoCard>
 
         <div className="grid grid-cols-1 gap-4">
-          <NeoCard className="flex items-start gap-3">
-            <BookOpen className="mt-1 h-5 w-5 text-primary" />
+          <NeoCard className="flex items-start gap-4 p-5">
+            <IconBadgeStatic>
+              <BookOpen className="h-5 w-5 text-primary" strokeWidth={1.75} />
+            </IconBadgeStatic>
             <div>
-              <h3 className="font-semibold">Class-only access</h3>
-              <p className="text-sm text-muted-foreground">You only see your own class's subjects and materials. No noise.</p>
+              <h3 className="font-display font-semibold text-foreground">Class-only access</h3>
+              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                You only see subjects and files for your batch.
+              </p>
             </div>
           </NeoCard>
-          <NeoCard className="flex items-start gap-3">
-            <ShieldCheck className="mt-1 h-5 w-5 text-primary" />
+          <NeoCard className="flex items-start gap-4 p-5">
+            <IconBadgeStatic>
+              <ShieldCheck className="h-5 w-5 text-primary" strokeWidth={1.75} />
+            </IconBadgeStatic>
             <div>
-              <h3 className="font-semibold">Private by default</h3>
-              <p className="text-sm text-muted-foreground">Files are protected with signed links and watermarked with your email.</p>
+              <h3 className="font-display font-semibold text-foreground">Private by default</h3>
+              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                Secure links and watermarks help protect institute IP.
+              </p>
             </div>
           </NeoCard>
         </div>
       </div>
+    </div>
+  );
+}
+
+function IconBadgeStatic({ children }: { children: ReactNode }) {
+  return (
+    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10">
+      {children}
     </div>
   );
 }

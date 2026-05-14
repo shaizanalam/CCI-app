@@ -5,9 +5,10 @@ import { NeoCard } from "@/components/neo/NeoCard";
 import { NeoButton } from "@/components/neo/NeoButton";
 import { signOut } from "@/services/auth.service";
 import { Hourglass } from "lucide-react";
+import { BrandMark } from "@/components/layout/PremiumHeader";
 
 export const Route = createFileRoute("/pending")({
-  head: () => ({ meta: [{ title: "Pending approval — Lumen" }] }),
+  head: () => ({ meta: [{ title: "Pending approval — CCI Notes" }] }),
   component: PendingPage,
 });
 
@@ -23,19 +24,34 @@ function PendingPage() {
   }, [loading, session, profile, role, navigate]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-5 py-10">
+    <div className="flex min-h-dvh flex-col items-center justify-center bg-background px-5 py-12">
+      <div className="mb-6">
+        <BrandMark className="h-14 w-14 rounded-3xl" />
+      </div>
       <div className="mx-auto w-full max-w-md text-center">
-        <NeoCard>
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full neo-inset text-primary">
-            <Hourglass className="h-7 w-7" />
+        <NeoCard className="p-8">
+          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary shadow-inner">
+            <Hourglass className="h-8 w-8" strokeWidth={1.75} />
           </div>
-          <h1 className="text-xl font-bold">Waiting for approval</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Your account has been created. An admin from your coaching institute will approve you shortly.
+          <h1 className="font-display text-xl font-bold text-foreground">Waiting for approval</h1>
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+            Your account is ready. An admin from your coaching institute will approve you shortly so
+            you can access class materials.
           </p>
-          <div className="mt-6 flex gap-3">
-            <NeoButton onClick={refresh} className="flex-1">Check status</NeoButton>
-            <NeoButton variant="ghost" onClick={async () => { await signOut(); navigate({ to: "/login" }); }} className="flex-1">Sign out</NeoButton>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <NeoButton onClick={refresh} className="flex-1 min-h-[52px]">
+              Check status
+            </NeoButton>
+            <NeoButton
+              variant="ghost"
+              onClick={async () => {
+                await signOut();
+                navigate({ to: "/login" });
+              }}
+              className="flex-1 min-h-[52px] border border-border/80"
+            >
+              Sign out
+            </NeoButton>
           </div>
         </NeoCard>
       </div>

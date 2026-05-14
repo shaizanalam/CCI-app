@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import { getSignedUrl } from "@/services/materials.service";
 import { Watermark } from "./Watermark";
-import { Loader2 } from "lucide-react";
+import { BookOpen, ChevronLeft, ChevronRight, Loader2, Pencil, Search, X } from "lucide-react";
 
 interface Props {
   storagePath: string;
   fileType: "pdf" | "image";
   watermark: string;
+  title: string;
+  onClose: () => void;
 }
 
-export function ProtectedViewer({ storagePath, fileType, watermark }: Props) {
+export function ProtectedViewer({ storagePath, fileType, watermark, title, onClose }: Props) {
   const [url, setUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,35 +32,100 @@ export function ProtectedViewer({ storagePath, fileType, watermark }: Props) {
   }, [storagePath]);
 
   return (
-    <div className="relative h-[78vh] w-full overflow-hidden rounded-2xl bg-muted neo-inset">
-      {!url && !error && (
-        <div className="flex h-full items-center justify-center text-muted-foreground">
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Preparing secure viewer…
+    <div className="fixed inset-0 z-50 flex flex-col bg-gradient-to-b from-background via-background to-card">
+      <header className="flex shrink-0 items-center gap-3 border-b border-border/60 bg-card/90 px-4 py-3 backdrop-blur-md">
+        <button
+          type="button"
+          className="tap-highlight-none flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary transition hover:bg-primary/15"
+          aria-label="Close and return"
+          onClick={onClose}
+        >
+          <BookOpen className="h-5 w-5" strokeWidth={1.75} />
+        </button>
+        <h1 className="min-w-0 flex-1 truncate text-center font-display text-base font-semibold text-foreground">
+          {title}
+        </h1>
+        <button
+          type="button"
+          onClick={onClose}
+          className="tap-highlight-none flex h-10 w-10 items-center justify-center rounded-2xl border border-border/80 bg-background text-muted-foreground transition hover:text-foreground"
+          aria-label="Close viewer"
+        >
+          <X className="h-5 w-5" />
+        </button>
+      </header>
+
+      <div className="relative min-h-0 flex-1 p-3 sm:p-4">
+        <div className="relative mx-auto flex h-full max-w-3xl flex-col overflow-hidden rounded-3xl border border-border/50 bg-card shadow-[var(--shadow-float-value)]">
+          <div className="relative min-h-0 flex-1 overflow-hidden bg-muted/30">
+            {!url && !error && (
+              <div className="flex h-[65vh] min-h-[240px] items-center justify-center gap-2 text-sm text-muted-foreground">
+                <Loader2 className="h-5 w-5 animate-spin" />
+                Preparing secure viewer…
+              </div>
+            )}
+            {error && (
+              <div className="flex h-[65vh] min-h-[240px] items-center justify-center px-6 text-center text-sm text-destructive">
+                {error}
+              </div>
+            )}
+            {url && fileType === "pdf" && (
+              <iframe
+                title="PDF"
+                src={`${url}#toolbar=0&navpanes=0&scrollbar=1`}
+                className="absolute inset-0 h-full w-full bg-white"
+              />
+            )}
+            {url && fileType === "image" && (
+              <img
+                src={url}
+                alt="Study material"
+                className="absolute inset-0 h-full w-full object-contain bg-white"
+                draggable={false}
+                onContextMenu={(e) => e.preventDefault()}
+              />
+            )}
+            <Watermark watermark={watermark} />
+          </div>
         </div>
-      )}
-      {error && (
-        <div className="flex h-full items-center justify-center px-6 text-center text-sm text-destructive">
-          {error}
+      </div>
+
+      <footer className="flex shrink-0 justify-center px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-1">
+        <div className="flex items-center gap-1 rounded-full bg-[#1f2937] px-2 py-2 text-white shadow-lg shadow-slate-900/20">
+          <span
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full opacity-40"
+            aria-hidden
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </span>
+          <div className="min-w-[8rem] border-x border-white/10 px-4 text-center">
+            <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-white/60">
+              Reading
+            </p>
+            <p className="text-xs font-semibold">Secure view</p>
+          </div>
+          <span
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full opacity-40"
+            aria-hidden
+          >
+            <ChevronRight className="h-5 w-5" />
+          </span>
+          <div className="ml-1 flex items-center gap-0.5 border-l border-white/10 pl-2">
+            <span
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full text-white/70"
+              title="Find in document"
+            >
+              <Search className="h-4 w-4" />
+            </span>
+            <span
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full text-white/70"
+              title="Study mode"
+            >
+              <Pencil className="h-4 w-4" />
+            </span>
+          </div>
         </div>
-      )}
-      {url && fileType === "pdf" && (
-        <iframe
-          title="PDF"
-          // #toolbar=0 hides built-in download/print on most desktop chromium browsers (best-effort)
-          src={`${url}#toolbar=0&navpanes=0&scrollbar=1`}
-          className="absolute inset-0 h-full w-full"
-        />
-      )}
-      {url && fileType === "image" && (
-        <img
-          src={url}
-          alt="material"
-          className="absolute inset-0 h-full w-full object-contain"
-          draggable={false}
-          onContextMenu={(e) => e.preventDefault()}
-        />
-      )}
-      <Watermark watermark={watermark} />
+      </footer>
     </div>
   );
 }

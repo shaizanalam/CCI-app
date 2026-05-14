@@ -1,7 +1,12 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { ClassLevel } from "@/hooks/use-session";
 
-export async function signUp(input: { name: string; email: string; password: string; classLevel: ClassLevel }) {
+export async function signUp(input: {
+  name: string;
+  email: string;
+  password: string;
+  classLevel: ClassLevel;
+}) {
   const { data, error } = await supabase.auth.signUp({
     email: input.email,
     password: input.password,

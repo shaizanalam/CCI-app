@@ -20,6 +20,17 @@ export async function createSubject(name: string, classLevel: ClassLevel) {
   return data;
 }
 
+/** Removes every material file for a subject, then deletes the subject row. Admin-only via RLS. */
+export async function deleteSubjectCascade(subjectId: string) {
+  const { data: mats, error } = await supabase.from("materials").select("id, storage_path").eq("subject_id", subjectId);
+  if (error) throw error;
+  for (const m of mats ?? []) {
+    await deleteMaterial(m.id, m.storage_path);
+  }
+  const { error: delSub } = await supabase.from("subjects").delete().eq("id", subjectId);
+  if (delSub) throw delSub;
+}
+
 export async function listMaterialsBySubject(subjectId: string) {
   const { data, error } = await supabase
     .from("materials")
@@ -71,11 +82,21 @@ export async function uploadMaterial(args: {
     .select()
     .single();
   if (error) {
-    // best effort cleanup
     await supabase.storage.from(BUCKET).remove([path]);
     throw error;
   }
   return data;
+}
+
+export async function updateMaterialMeta(id: string, input: { title: string; description: string | null }) {
+  const { error } = await supabase
+    .from("materials")
+    .update({
+      title: input.title.trim(),
+      description: input.description,
+    })
+    .eq("id", id);
+  if (error) throw error;
 }
 
 export async function getSignedUrl(storagePath: string, expiresInSec = 60 * 10) {
@@ -84,8 +105,10 @@ export async function getSignedUrl(storagePath: string, expiresInSec = 60 * 10) 
   return data.signedUrl;
 }
 
+/** Deletes storage object first, then DB row. Admin-only via RLS. */
 export async function deleteMaterial(id: string, storagePath: string) {
-  await supabase.storage.from(BUCKET).remove([storagePath]);
+  const { error: st } = await supabase.storage.from(BUCKET).remove([storagePath]);
+  if (st) throw st;
   const { error } = await supabase.from("materials").delete().eq("id", id);
   if (error) throw error;
 }

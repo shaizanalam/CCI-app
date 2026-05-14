@@ -20,16 +20,17 @@ function AdminLayout() {
 
   if (loading || !session) {
     return (
-      <div className="flex min-h-screen items-center justify-center text-muted-foreground">
-        <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Loading…
+      <div className="flex min-h-dvh flex-col items-center justify-center gap-3 bg-background px-6 text-muted-foreground">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <p className="text-sm font-medium">Loading admin tools…</p>
       </div>
     );
   }
   if (role !== "admin") return null;
 
   return (
-    <div className="min-h-screen bg-background pb-24">
-      <main className="mx-auto max-w-2xl px-5 pt-6">
+    <div className="min-h-dvh bg-background pb-[calc(5.75rem+env(safe-area-inset-bottom))]">
+      <main className="mx-auto max-w-2xl px-5 pt-5 sm:px-6 sm:pt-8">
         <Outlet />
       </main>
       <BottomNav role="admin" />

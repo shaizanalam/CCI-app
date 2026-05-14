@@ -24,9 +24,10 @@ export async function approveStudent(id: string) {
   if (error) throw error;
 }
 
-export async function rejectStudent(id: string) {
-  // Reject = delete profile (cascades from auth.users requires admin; here we just mark unapproved + remove from list by deletion would need service role).
-  // Safer: keep approved=false. We expose a "remove" by deleting the profile row only — auth user remains but cannot access anything.
+export async function deleteStudentProfile(id: string) {
   const { error } = await supabase.from("profiles").delete().eq("id", id);
   if (error) throw error;
 }
+
+/** @deprecated Use deleteStudentProfile — kept for existing imports */
+export const rejectStudent = deleteStudentProfile;

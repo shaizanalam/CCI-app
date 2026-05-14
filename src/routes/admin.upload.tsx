@@ -6,16 +6,21 @@ import { listSubjects, uploadMaterial } from "@/services/materials.service";
 import { NeoCard } from "@/components/neo/NeoCard";
 import { NeoButton } from "@/components/neo/NeoButton";
 import { NeoInput, NeoTextarea, NeoSelect, FieldLabel } from "@/components/neo/NeoInput";
-import { Upload as UploadIcon, FileText } from "lucide-react";
+import { ClassPills } from "@/components/neo/ClassPills";
+import { PremiumHeader } from "@/components/layout/PremiumHeader";
+import { useSession } from "@/hooks/use-session";
+import { FileText } from "lucide-react";
 import type { ClassLevel } from "@/hooks/use-session";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/admin/upload")({
   component: UploadScreen,
 });
 
-const MAX_BYTES = 25 * 1024 * 1024; // 25MB
+const MAX_BYTES = 25 * 1024 * 1024;
 
 function UploadScreen() {
+  const { profile } = useSession();
   const [cls, setCls] = useState<ClassLevel>("9");
   const [subjectId, setSubjectId] = useState<string>("");
   const [title, setTitle] = useState("");
@@ -24,82 +29,142 @@ function UploadScreen() {
   const [loading, setLoading] = useState(false);
 
   const subjectsQ = useQuery({ queryKey: ["subjects-all"], queryFn: () => listSubjects() });
-  const subjectsForClass = useMemo(() => (subjectsQ.data ?? []).filter((s) => s.class === cls), [subjectsQ.data, cls]);
+  const subjectsForClass = useMemo(
+    () => (subjectsQ.data ?? []).filter((s) => s.class === cls),
+    [subjectsQ.data, cls],
+  );
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!file) return toast.error("Please select a file to upload");
     if (!subjectId) return toast.error("Please select a subject for this material");
-    if (title.trim().length < 2) return toast.error("Please enter a title with at least 2 characters");
-    if (file.size > MAX_BYTES) return toast.error("File size exceeds 25MB limit. Please choose a smaller file.");
+    if (title.trim().length < 2)
+      return toast.error("Please enter a title with at least 2 characters");
+    if (file.size > MAX_BYTES)
+      return toast.error("File size exceeds 25MB limit. Please choose a smaller file.");
 
     setLoading(true);
     try {
-      await uploadMaterial({ file, classLevel: cls, subjectId, title: title.trim(), description: description.trim() || undefined });
+      await uploadMaterial({
+        file,
+        classLevel: cls,
+        subjectId,
+        title: title.trim(),
+        description: description.trim() || undefined,
+      });
       toast.success("Uploaded");
-      setTitle(""); setDescription(""); setFile(null);
+      setTitle("");
+      setDescription("");
+      setFile(null);
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Upload failed. Please try again or check your file format.");
+      toast.error(
+        e instanceof Error
+          ? e.message
+          : "Upload failed. Please try again or check your file format.",
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold">Upload material</h1>
-      <NeoCard>
-        <form onSubmit={onSubmit} className="space-y-4">
+    <div className="space-y-8 pb-4">
+      <PremiumHeader
+        avatarLinkTo="/admin"
+        avatarLabel={profile?.name ?? profile?.email ?? "Admin"}
+      />
+      <div>
+        <h1 className="font-display text-2xl font-bold text-foreground md:text-3xl">
+          Upload material
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Add PDFs or images for a class and subject. Maximum file size 25MB.
+        </p>
+      </div>
+
+      <NeoCard className="space-y-6 p-5 sm:p-6">
+        <form onSubmit={onSubmit} className="space-y-5">
           <div>
-            <FieldLabel>Class</FieldLabel>
-            <NeoSelect value={cls} onChange={(e) => { setCls(e.target.value as ClassLevel); setSubjectId(""); }}>
-              {(["9", "10", "11", "12"] as const).map((c) => (
-                <option key={c} value={c}>Class {c}</option>
-              ))}
-            </NeoSelect>
+            <FieldLabel>Select class</FieldLabel>
+            <ClassPills
+              value={cls}
+              onChange={(c) => {
+                setCls(c);
+                setSubjectId("");
+              }}
+            />
           </div>
           <div>
             <FieldLabel>Subject</FieldLabel>
             <NeoSelect value={subjectId} onChange={(e) => setSubjectId(e.target.value)} required>
-              <option value="">— Select subject —</option>
+              <option value="">Choose a subject…</option>
               {subjectsForClass.map((s) => (
-                <option key={s.id} value={s.id}>{s.name}</option>
+                <option key={s.id} value={s.id}>
+                  {s.name}
+                </option>
               ))}
             </NeoSelect>
             {subjectsForClass.length === 0 && (
-              <p className="mt-2 text-xs text-muted-foreground">No subjects for this class yet — create one first.</p>
+              <p className="mt-2 text-xs text-muted-foreground">
+                No subjects for this class yet — create one in Subjects first.
+              </p>
             )}
           </div>
           <div>
-            <FieldLabel>Title</FieldLabel>
-            <NeoInput value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Chapter 1 — Real numbers" required />
+            <FieldLabel>Material title</FieldLabel>
+            <NeoInput
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="e.g. Calculus basics — Chapter 1"
+              required
+            />
           </div>
           <div>
             <FieldLabel>Description (optional)</FieldLabel>
-            <NeoTextarea value={description} onChange={(e) => setDescription(e.target.value)} maxLength={500} />
+            <NeoTextarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              maxLength={500}
+              placeholder="Short note for students (optional)"
+            />
           </div>
           <div>
-            <FieldLabel>File (PDF or image, max 25MB)</FieldLabel>
-            <label className="neo-inset flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl px-4 py-8 text-center text-sm text-muted-foreground hover:text-foreground">
+            <FieldLabel>Upload file</FieldLabel>
+            <label
+              className={cn(
+                "tap-highlight-none flex cursor-pointer flex-col items-center justify-center gap-3 rounded-3xl border-2 border-dashed border-primary/35 bg-primary/[0.06] px-4 py-12 text-center transition hover:border-primary/55 hover:bg-primary/[0.09]",
+                file && "border-primary/50 bg-primary/10",
+              )}
+            >
               <input
                 type="file"
                 accept=".pdf,application/pdf,image/png,image/jpeg,image/webp"
                 className="hidden"
                 onChange={(e) => setFile(e.target.files?.[0] ?? null)}
               />
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-card shadow-md">
+                <FileText className="h-7 w-7 text-primary" />
+              </div>
               {file ? (
-                <span className="flex items-center gap-2 font-semibold text-foreground">
-                  <FileText className="h-4 w-4" /> {file.name}
+                <span className="max-w-full truncate px-2 font-semibold text-foreground">
+                  {file.name}
                 </span>
               ) : (
                 <>
-                  <UploadIcon className="h-6 w-6" />
-                  <span>Tap to choose a file</span>
+                  <p className="font-semibold text-foreground">Tap to select PDF or image</p>
+                  <p className="text-sm text-muted-foreground">Maximum file size: 25MB</p>
                 </>
               )}
             </label>
           </div>
-          <NeoButton type="submit" variant="primary" loading={loading} className="w-full">Upload</NeoButton>
+          <NeoButton
+            type="submit"
+            variant="primary"
+            loading={loading}
+            className="w-full min-h-[52px] text-base"
+          >
+            Upload now
+          </NeoButton>
         </form>
       </NeoCard>
     </div>

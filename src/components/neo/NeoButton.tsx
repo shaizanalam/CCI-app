@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
 
-type Variant = "default" | "primary" | "danger" | "ghost";
+type Variant = "default" | "primary" | "danger" | "ghost" | "secondary";
 
 export interface NeoButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
@@ -10,12 +10,14 @@ export interface NeoButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> 
 }
 
 const variants: Record<Variant, string> = {
-  default: "text-foreground neo-surface-sm hover:text-primary",
+  default:
+    "border border-border/80 bg-card text-foreground shadow-[var(--shadow-float-sm-value)] hover:border-primary/30 hover:text-primary",
+  secondary: "border border-border bg-muted/50 text-foreground hover:bg-muted",
   primary:
-    "text-primary-foreground bg-[var(--color-primary)] shadow-[8px_8px_16px_var(--neo-shadow-dark),-8px_-8px_16px_var(--neo-shadow-light)] hover:brightness-105",
+    "bg-primary text-primary-foreground shadow-md shadow-primary/25 hover:brightness-[1.04] active:brightness-[0.98]",
   danger:
-    "text-destructive-foreground bg-[var(--color-destructive)] shadow-[8px_8px_16px_var(--neo-shadow-dark),-8px_-8px_16px_var(--neo-shadow-light)] hover:brightness-105",
-  ghost: "text-muted-foreground hover:text-foreground",
+    "bg-destructive text-destructive-foreground shadow-sm hover:brightness-[1.04] active:brightness-[0.98]",
+  ghost: "text-muted-foreground hover:bg-muted/80 hover:text-foreground",
 };
 
 export const NeoButton = forwardRef<HTMLButtonElement, NeoButtonProps>(function NeoButton(
@@ -27,7 +29,7 @@ export const NeoButton = forwardRef<HTMLButtonElement, NeoButtonProps>(function 
       ref={ref}
       disabled={disabled || loading}
       className={cn(
-        "neo-pressable inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed",
+        "tap-highlight-none neo-pressable inline-flex min-h-[48px] items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50",
         variants[variant],
         className,
       )}
