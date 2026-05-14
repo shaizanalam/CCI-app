@@ -1,4 +1,4 @@
-# Lumen — Coaching Institute Learning Platform
+# CCI — Coaching Institute Learning Platform
 
 Premium, minimal learning platform for coaching institutes. Class 9–12 students get a private library of subjects, PDFs and notifications scoped strictly to their class. Admins approve students, manage subjects, upload materials, and broadcast alerts.
 
