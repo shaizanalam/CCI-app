@@ -3,15 +3,12 @@ import {
   Outlet,
   createRootRouteWithContext,
   HeadContent,
-  Scripts,
   Link,
   useRouter,
 } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
 
 import { ThemeProvider } from "@/providers/ThemeProvider";
-import { THEME_INIT_SCRIPT } from "@/lib/theme";
-import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
   return (
@@ -50,52 +47,17 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      { title: "CCI Notes" },
-      {
-        name: "description",
-        content:
-          "Private learning platform for coaching institute students. Class-isolated subjects, materials and notifications.",
-      },
-      { name: "theme-color", content: "#f4f7fb" },
-      { property: "og:title", content: "CCI Notes" },
-      {
-        property: "og:description",
-        content: "Private learning platform for coaching institute students.",
-      },
-      { property: "og:type", content: "website" },
-    ],
-    links: [{ rel: "stylesheet", href: appCss }],
-  }),
-  shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });
-
-function RootShell({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
-        <HeadContent />
-      </head>
-      <body>
-        <div id="root">{children}</div>
-        <Scripts />
-      </body>
-    </html>
-  );
-}
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
+        <HeadContent />
         <Outlet />
         <Toaster position="top-center" richColors closeButton />
       </QueryClientProvider>
