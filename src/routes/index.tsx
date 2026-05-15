@@ -10,7 +10,7 @@ import { BookOpen, ShieldCheck } from "lucide-react";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "CCI Notes — Class 9–12 coaching library" },
+      { title: "CCI — Class 9–12 coaching library" },
       {
         name: "description",
         content:
@@ -39,7 +39,7 @@ function Landing() {
         <div className="mb-10 flex items-center gap-4">
           <BrandMark className="h-14 w-14 rounded-3xl" />
           <div>
-            <h1 className="font-display text-xl font-bold text-foreground">CCI Notes</h1>
+            <h1 className="font-display text-xl font-bold text-foreground">CCI</h1>
             <p className="text-sm text-muted-foreground">Coaching notes, simplified.</p>
           </div>
         </div>

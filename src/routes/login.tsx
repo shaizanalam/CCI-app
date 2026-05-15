@@ -11,7 +11,7 @@ import { BrandMark } from "@/components/layout/PremiumHeader";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 
 export const Route = createFileRoute("/login")({
-  head: () => ({ meta: [{ title: "Sign in — CCI Notes" }] }),
+  head: () => ({ meta: [{ title: "Sign in — CCI" }] }),
   component: LoginPage,
 });
 
@@ -58,7 +58,7 @@ function LoginPage() {
           <div className="mb-4 flex justify-center">
             <BrandMark className="h-14 w-14 rounded-3xl" />
           </div>
-          <h1 className="font-display text-2xl font-bold text-foreground">CCI Notes</h1>
+          <h1 className="font-display text-2xl font-bold text-foreground">CCI</h1>
           <p className="mt-2 text-sm text-muted-foreground">Simplicity in learning.</p>
         </div>
 

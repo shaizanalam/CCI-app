@@ -29,7 +29,7 @@ export function PremiumHeader({
                 <BookOpen className="h-5 w-5 shrink-0" strokeWidth={1.75} />
               </div>
               <span className="truncate font-display text-lg font-semibold tracking-tight text-foreground">
-                CCI Notes
+                CCI
               </span>
             </>
           )}

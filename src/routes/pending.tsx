@@ -9,7 +9,7 @@ import { AuthThemeBar } from "@/components/layout/AuthThemeBar";
 import { BrandMark } from "@/components/layout/PremiumHeader";
 
 export const Route = createFileRoute("/pending")({
-  head: () => ({ meta: [{ title: "Pending approval — CCI Notes" }] }),
+  head: () => ({ meta: [{ title: "Pending approval — CCI" }] }),
   component: PendingPage,
 });
 

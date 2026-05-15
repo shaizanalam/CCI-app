@@ -13,7 +13,7 @@ import type { ClassLevel } from "@/hooks/use-session";
 import { Eye, EyeOff, Lock, User, Mail } from "lucide-react";
 
 export const Route = createFileRoute("/signup")({
-  head: () => ({ meta: [{ title: "Create account — CCI Notes" }] }),
+  head: () => ({ meta: [{ title: "Create account — CCI" }] }),
   component: SignupPage,
 });
 

@@ -133,7 +133,7 @@ function ProfileScreen() {
       </NeoCard>
 
       <NeoCard className="relative overflow-hidden border-0 bg-gradient-to-r from-sky-500 via-primary to-indigo-600 p-5 text-white shadow-lg">
-        <p className="font-display text-lg font-bold">CCI Notes</p>
+        <p className="font-display text-lg font-bold">CCI</p>
         <p className="mt-1 text-sm text-white/85">
           Your account is private and visible only to your institute.
         </p>
