@@ -76,7 +76,7 @@ function HomeScreen() {
 
       {first && (
         <Link to="/app/subjects/$subjectId" params={{ subjectId: first.id }}>
-          <div className="tap-highlight-none neo-pressable relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary via-primary to-indigo-600 p-6 text-white shadow-lg shadow-primary/25">
+          <div className="tap-highlight-none neo-pressable glow-primary relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary via-primary to-indigo-600 p-6 text-white shadow-lg shadow-primary/25 dark:from-primary/90 dark:via-indigo-600 dark:to-violet-700">
             <div className="pointer-events-none absolute -right-8 -top-8 h-36 w-36 rounded-full bg-white/10" />
             <span className="relative inline-flex rounded-full bg-white/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-white/95">
               Active subject

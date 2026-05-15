@@ -9,9 +9,8 @@ import { NeoInput, NeoTextarea, NeoSelect, FieldLabel } from "@/components/neo/N
 import { ClassPills } from "@/components/neo/ClassPills";
 import { PremiumHeader } from "@/components/layout/PremiumHeader";
 import { useSession } from "@/hooks/use-session";
-import { FileText } from "lucide-react";
+import { FileUploadPicker } from "@/components/neo/FileUploadPicker";
 import type { ClassLevel } from "@/hooks/use-session";
-import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/admin/upload")({
   component: UploadScreen,
@@ -130,32 +129,7 @@ function UploadScreen() {
           </div>
           <div>
             <FieldLabel>Upload file</FieldLabel>
-            <label
-              className={cn(
-                "tap-highlight-none flex cursor-pointer flex-col items-center justify-center gap-3 rounded-3xl border-2 border-dashed border-primary/35 bg-primary/[0.06] px-4 py-12 text-center transition hover:border-primary/55 hover:bg-primary/[0.09]",
-                file && "border-primary/50 bg-primary/10",
-              )}
-            >
-              <input
-                type="file"
-                accept=".pdf,application/pdf,image/png,image/jpeg,image/webp"
-                className="hidden"
-                onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-              />
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-card shadow-md">
-                <FileText className="h-7 w-7 text-primary" />
-              </div>
-              {file ? (
-                <span className="max-w-full truncate px-2 font-semibold text-foreground">
-                  {file.name}
-                </span>
-              ) : (
-                <>
-                  <p className="font-semibold text-foreground">Tap to select PDF or image</p>
-                  <p className="text-sm text-muted-foreground">Maximum file size: 25MB</p>
-                </>
-              )}
-            </label>
+            <FileUploadPicker file={file} onChange={setFile} maxBytes={MAX_BYTES} />
           </div>
           <NeoButton
             type="submit"

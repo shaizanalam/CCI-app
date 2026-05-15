@@ -19,7 +19,11 @@ export function NeoCard({
 }: HTMLAttributes<HTMLDivElement> & { children?: ReactNode; variant?: NeoCardVariant }) {
   return (
     <div
-      className={cn("rounded-3xl p-5 transition-shadow duration-200", variants[variant], className)}
+      className={cn(
+        "rounded-3xl p-5 transition-[box-shadow,background-color,border-color] duration-300 ease-out",
+        variants[variant],
+        className,
+      )}
       {...props}
     >
       {children}

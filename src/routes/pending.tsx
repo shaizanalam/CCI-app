@@ -5,6 +5,7 @@ import { NeoCard } from "@/components/neo/NeoCard";
 import { NeoButton } from "@/components/neo/NeoButton";
 import { signOut } from "@/services/auth.service";
 import { Hourglass } from "lucide-react";
+import { AuthThemeBar } from "@/components/layout/AuthThemeBar";
 import { BrandMark } from "@/components/layout/PremiumHeader";
 
 export const Route = createFileRoute("/pending")({
@@ -24,7 +25,8 @@ function PendingPage() {
   }, [loading, session, profile, role, navigate]);
 
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center bg-background px-5 py-12">
+    <div className="relative flex min-h-dvh flex-col items-center justify-center bg-background px-5 py-12">
+      <AuthThemeBar />
       <div className="mb-6">
         <BrandMark className="h-14 w-14 rounded-3xl" />
       </div>

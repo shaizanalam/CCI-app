@@ -7,8 +7,10 @@ import {
   Link,
   useRouter,
 } from "@tanstack/react-router";
-import { Toaster } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 
+import { ThemeProvider } from "@/providers/ThemeProvider";
+import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
@@ -76,8 +78,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <HeadContent />
       </head>
       <body>
@@ -91,9 +94,11 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
-    <QueryClientProvider client={queryClient}>
-      <Outlet />
-      <Toaster position="top-center" richColors />
-    </QueryClientProvider>
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <Outlet />
+        <Toaster position="top-center" richColors closeButton />
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }

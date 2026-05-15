@@ -75,7 +75,7 @@ function ProfileScreen() {
           <IconBadge tone="primary" className="mx-auto mb-2 h-11 w-11">
             <Shapes className="h-5 w-5" />
           </IconBadge>
-          <p className="font-display text-2xl font-bold text-emerald-600">
+          <p className="font-display text-2xl font-bold text-success">
             {profile?.class ?? "—"}
           </p>
           <p className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">

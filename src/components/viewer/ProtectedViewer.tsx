@@ -73,14 +73,14 @@ export function ProtectedViewer({ storagePath, fileType, watermark, title, onClo
               <iframe
                 title="PDF"
                 src={`${url}#toolbar=0&navpanes=0&scrollbar=1`}
-                className="absolute inset-0 h-full w-full bg-white"
+                className="absolute inset-0 h-full w-full bg-card"
               />
             )}
             {url && fileType === "image" && (
               <img
                 src={url}
                 alt="Study material"
-                className="absolute inset-0 h-full w-full object-contain bg-white"
+                className="absolute inset-0 h-full w-full object-contain bg-card"
                 draggable={false}
                 onContextMenu={(e) => e.preventDefault()}
               />
@@ -91,18 +91,18 @@ export function ProtectedViewer({ storagePath, fileType, watermark, title, onClo
       </div>
 
       <footer className="flex shrink-0 justify-center px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-1">
-        <div className="flex items-center gap-1 rounded-full bg-[#1f2937] px-2 py-2 text-white shadow-lg shadow-slate-900/20">
+        <div className="flex items-center gap-1 rounded-full border border-border/60 bg-card/95 px-2 py-2 text-foreground shadow-[var(--shadow-float-value)] backdrop-blur-md">
           <span
             className="inline-flex h-10 w-10 items-center justify-center rounded-full opacity-40"
             aria-hidden
           >
             <ChevronLeft className="h-5 w-5" />
           </span>
-          <div className="min-w-[8rem] border-x border-white/10 px-4 text-center">
-            <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-white/60">
+          <div className="min-w-[8rem] border-x border-border/80 px-4 text-center">
+            <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
               Reading
             </p>
-            <p className="text-xs font-semibold">Secure view</p>
+            <p className="text-xs font-semibold text-foreground">Secure view</p>
           </div>
           <span
             className="inline-flex h-10 w-10 items-center justify-center rounded-full opacity-40"
@@ -110,15 +110,15 @@ export function ProtectedViewer({ storagePath, fileType, watermark, title, onClo
           >
             <ChevronRight className="h-5 w-5" />
           </span>
-          <div className="ml-1 flex items-center gap-0.5 border-l border-white/10 pl-2">
+          <div className="ml-1 flex items-center gap-0.5 border-l border-border/80 pl-2">
             <span
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full text-white/70"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full text-muted-foreground"
               title="Find in document"
             >
               <Search className="h-4 w-4" />
             </span>
             <span
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full text-white/70"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full text-muted-foreground"
               title="Study mode"
             >
               <Pencil className="h-4 w-4" />

@@ -86,12 +86,17 @@ function AdminSubjectMaterials() {
 
   const confirmDelete = async () => {
     if (!del) return;
-    await deleteMaterial(del.id, del.path);
-    toast.success("Material deleted");
-    setDel(null);
-    qc.invalidateQueries({ queryKey: ["materials", subjectId] });
-    qc.invalidateQueries({ queryKey: ["recent-materials"] });
-    qc.invalidateQueries({ queryKey: ["subjects-all"] });
+    try {
+      await deleteMaterial(del.id, del.path);
+      toast.success("Material deleted");
+      setDel(null);
+      qc.invalidateQueries({ queryKey: ["materials", subjectId] });
+      qc.invalidateQueries({ queryKey: ["recent-materials"] });
+      qc.invalidateQueries({ queryKey: ["subjects-all"] });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not delete material.");
+      throw e;
+    }
   };
 
   return (
@@ -146,8 +151,8 @@ function AdminSubjectMaterials() {
               </NeoButton>
               <NeoButton
                 type="button"
-                variant="default"
-                className="min-h-[44px] flex-1 border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 sm:flex-none"
+                variant="danger"
+                className="min-h-[44px] flex-1 sm:flex-none"
                 onClick={(e) => {
                   e.stopPropagation();
                   setDel({ id: m.id, title: m.title, path: m.storage_path });

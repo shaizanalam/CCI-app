@@ -1,0 +1,87 @@
+.theme-toggle {
+  font-size: 8px;
+  position: relative;
+  display: inline-block;
+  width: 7em;
+  cursor: pointer;
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+@media (max-width: 640px) {
+  .theme-toggle {
+    font-size: 14px;
+    width: 6em;
+  }
+}
+
+.theme-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.theme-toggle svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.theme-toggle #container,
+.theme-toggle #patches,
+.theme-toggle #stars,
+.theme-toggle #button,
+.theme-toggle #sun,
+.theme-toggle #moon,
+.theme-toggle #cloud {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 0.25s;
+}
+
+.theme-toggle input:checked + svg #container {
+  fill: #2b4360;
+}
+
+.theme-toggle input:checked + svg #button {
+  transform: translate(28px, 2.333px);
+}
+
+.theme-toggle #sun {
+  opacity: 1;
+}
+
+.theme-toggle input:checked + svg #sun {
+  opacity: 0;
+}
+
+.theme-toggle #moon {
+  opacity: 0;
+}
+
+.theme-toggle input:checked + svg #moon {
+  opacity: 1;
+}
+
+.theme-toggle #cloud {
+  opacity: 1;
+}
+
+.theme-toggle input:checked + svg #cloud {
+  opacity: 0;
+}
+
+.theme-toggle #stars {
+  opacity: 0;
+}
+
+.theme-toggle input:checked + svg #stars {
+  opacity: 1;
+}
+
+.theme-toggle:focus-within {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+  border-radius: 9999px;
+}

@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft, BookOpen } from "lucide-react";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
 
@@ -33,13 +34,16 @@ export function PremiumHeader({
             </>
           )}
         </div>
-        <Link
-          to={avatarLinkTo}
-          className="tap-highlight-none flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-border/80 bg-card text-sm font-bold text-primary shadow-[var(--shadow-float-sm-value)] transition hover:border-primary/35"
-          aria-label="Open profile"
-        >
-          {initial}
-        </Link>
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          <ThemeToggle />
+          <Link
+            to={avatarLinkTo}
+            className="tap-highlight-none flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-border/80 bg-card text-sm font-bold text-primary shadow-[var(--shadow-float-sm-value)] transition hover:border-primary/35"
+            aria-label="Open profile"
+          >
+            {initial}
+          </Link>
+        </div>
       </div>
       {(title || subtitle) && (
         <div className="mt-6">
@@ -88,7 +92,10 @@ export function DetailHeader({
           {subtitle && <p className="mt-0.5 text-sm text-muted-foreground">{subtitle}</p>}
         </div>
       </div>
-      {right}
+      <div className="flex shrink-0 items-center gap-2">
+        <ThemeToggle />
+        {right}
+      </div>
     </header>
   );
 }

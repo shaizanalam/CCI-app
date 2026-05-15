@@ -6,6 +6,7 @@ import { signIn } from "@/services/auth.service";
 import { NeoCard } from "@/components/neo/NeoCard";
 import { NeoButton } from "@/components/neo/NeoButton";
 import { NeoInput, FieldLabel } from "@/components/neo/NeoInput";
+import { AuthThemeBar } from "@/components/layout/AuthThemeBar";
 import { BrandMark } from "@/components/layout/PremiumHeader";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 
@@ -50,7 +51,8 @@ function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-background px-5 py-12">
+    <div className="relative flex min-h-dvh items-center justify-center bg-background px-5 py-12">
+      <AuthThemeBar />
       <div className="mx-auto w-full max-w-md">
         <div className="mb-8 text-center">
           <div className="mb-4 flex justify-center">

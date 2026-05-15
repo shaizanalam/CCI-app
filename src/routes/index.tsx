@@ -3,6 +3,7 @@ import { useEffect, type ReactNode } from "react";
 import { useSession } from "@/hooks/use-session";
 import { NeoCard } from "@/components/neo/NeoCard";
 import { NeoButton } from "@/components/neo/NeoButton";
+import { AuthThemeBar } from "@/components/layout/AuthThemeBar";
 import { BrandMark } from "@/components/layout/PremiumHeader";
 import { BookOpen, ShieldCheck } from "lucide-react";
 
@@ -32,7 +33,8 @@ function Landing() {
   }, [loading, session, role, profile, navigate]);
 
   return (
-    <div className="min-h-dvh bg-background px-5 py-12">
+    <div className="relative min-h-dvh bg-background px-5 py-12">
+      <AuthThemeBar />
       <div className="mx-auto max-w-md">
         <div className="mb-10 flex items-center gap-4">
           <BrandMark className="h-14 w-14 rounded-3xl" />
