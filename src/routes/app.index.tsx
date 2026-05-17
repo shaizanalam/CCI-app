@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { useSession } from "@/hooks/use-session";
+import { formatClassStream } from "@/lib/stream-access";
 import { listSubjects, listRecentMaterials } from "@/services/materials.service";
 import { listNotifications } from "@/services/notifications.service";
 import { NeoCard } from "@/components/neo/NeoCard";
@@ -28,10 +29,11 @@ export const Route = createFileRoute("/app/")({
 function HomeScreen() {
   const { profile } = useSession();
   const cls = profile?.class ?? undefined;
+  const stream = profile?.stream ?? undefined;
   const [q, setQ] = useState("");
 
   const subjectsQ = useQuery({
-    queryKey: ["subjects", cls],
+    queryKey: ["subjects", cls, stream],
     queryFn: () => listSubjects(cls),
     enabled: !!cls,
   });
@@ -68,7 +70,8 @@ function HomeScreen() {
           Hello, {profile?.name?.split(" ")[0] ?? "Student"}
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Class {profile?.class ?? "—"} · {subjectsQ.data?.length ?? 0} subjects
+          {formatClassStream(profile?.class, profile?.stream ?? null)} ·{" "}
+          {subjectsQ.data?.length ?? 0} subjects
         </p>
       </div>
 

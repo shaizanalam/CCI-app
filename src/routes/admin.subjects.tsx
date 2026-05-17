@@ -15,6 +15,13 @@ import { useSession } from "@/hooks/use-session";
 import { BookOpen, ChevronRight, FolderOpen, MoreVertical, PlusCircle, Trash2 } from "lucide-react";
 import type { ClassLevel } from "@/hooks/use-session";
 import {
+  defaultStreamAccessForClass,
+  formatStreamAccessLabel,
+  streamAccessOptionsForAdminClass,
+  type StreamAccess,
+} from "@/lib/stream-access";
+import { NeoSelect } from "@/components/neo/NeoInput";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -31,7 +38,9 @@ function AdminSubjects() {
   const { data } = useQuery({ queryKey: ["subjects-all"], queryFn: () => listSubjects() });
   const [name, setName] = useState("");
   const [cls, setCls] = useState<ClassLevel>("9");
+  const [streamAccess, setStreamAccess] = useState<StreamAccess>("all");
   const [loading, setLoading] = useState(false);
+  const streamOptions = streamAccessOptionsForAdminClass(cls);
   const [delSubject, setDelSubject] = useState<{ id: string; name: string } | null>(null);
 
   const onCreate = async (e: React.FormEvent) => {
@@ -43,7 +52,7 @@ function AdminSubjects() {
     }
     setLoading(true);
     try {
-      await createSubject(trimmed, cls);
+      await createSubject(trimmed, cls, streamAccess);
       toast.success("Subject created");
       setName("");
       qc.invalidateQueries({ queryKey: ["subjects-all"] });
@@ -88,13 +97,40 @@ function AdminSubjects() {
           </div>
           <div>
             <FieldLabel>Assign to class</FieldLabel>
-            <ClassPills value={cls} onChange={setCls} disabled={loading} />
+            <ClassPills
+              value={cls}
+              onChange={(c) => {
+                setCls(c);
+                setStreamAccess(defaultStreamAccessForClass(c));
+              }}
+              disabled={loading}
+            />
+          </div>
+          <div>
+            <FieldLabel>Stream visibility</FieldLabel>
+            <NeoSelect
+              value={streamAccess}
+              onChange={(e) => setStreamAccess(e.target.value as StreamAccess)}
+              disabled={loading || streamOptions.length === 1}
+            >
+              {streamOptions.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </NeoSelect>
+            <p className="mt-2 text-xs text-muted-foreground">
+              {streamOptions.find((o) => o.value === streamAccess)?.hint ??
+                "Choose who can see this subject."}
+            </p>
           </div>
           <NeoCard variant="muted" className="flex items-center justify-between gap-3 p-4">
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Preview</p>
               <p className="mt-1 font-display text-lg font-semibold text-foreground">{name.trim() || "Subject name"}</p>
-              <p className="mt-1 text-xs text-muted-foreground">Class {cls}</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Class {cls} · {formatStreamAccessLabel(streamAccess)}
+              </p>
             </div>
             <IconBadge tone="accent" className="h-12 w-12">
               <BookOpen className="h-5 w-5" />
@@ -123,7 +159,9 @@ function AdminSubjects() {
                 className="min-w-0 flex-1 tap-highlight-none rounded-2xl py-1 transition hover:bg-muted/40"
               >
                 <p className="font-display font-semibold text-foreground">{s.name}</p>
-                <p className="text-sm text-muted-foreground">Class {s.class} · Manage files</p>
+                <p className="text-sm text-muted-foreground">
+                  Class {s.class} · {formatStreamAccessLabel(s.stream_access as StreamAccess)} · Manage files
+                </p>
               </Link>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

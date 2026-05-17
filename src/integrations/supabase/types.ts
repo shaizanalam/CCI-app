@@ -87,6 +87,7 @@ export type Database = {
           email: string;
           id: string;
           name: string;
+          stream: string | null;
           updated_at: string;
         };
         Insert: {
@@ -96,6 +97,7 @@ export type Database = {
           email: string;
           id: string;
           name: string;
+          stream?: string | null;
           updated_at?: string;
         };
         Update: {
@@ -105,6 +107,7 @@ export type Database = {
           email?: string;
           id?: string;
           name?: string;
+          stream?: string | null;
           updated_at?: string;
         };
         Relationships: [];
@@ -116,6 +119,7 @@ export type Database = {
           created_by: string | null;
           id: string;
           name: string;
+          stream_access: string;
         };
         Insert: {
           class: Database["public"]["Enums"]["class_level"];
@@ -123,6 +127,7 @@ export type Database = {
           created_by?: string | null;
           id?: string;
           name: string;
+          stream_access?: string;
         };
         Update: {
           class?: Database["public"]["Enums"]["class_level"];
@@ -130,6 +135,7 @@ export type Database = {
           created_by?: string | null;
           id?: string;
           name?: string;
+          stream_access?: string;
         };
         Relationships: [];
       };
@@ -159,9 +165,21 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      can_access_material_storage: {
+        Args: { _path: string; _user_id: string };
+        Returns: boolean;
+      };
+      can_access_subject_stream: {
+        Args: { _stream_access: string; _user_id: string };
+        Returns: boolean;
+      };
       current_class: {
         Args: { _user_id: string };
         Returns: Database["public"]["Enums"]["class_level"];
+      };
+      current_stream: {
+        Args: { _user_id: string };
+        Returns: string;
       };
       has_role: {
         Args: {

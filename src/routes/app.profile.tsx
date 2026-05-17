@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 import { useSession } from "@/hooks/use-session";
+import { formatClassStream, formatStreamLabel } from "@/lib/stream-access";
 import { signOut } from "@/services/auth.service";
 import { listSubjects } from "@/services/materials.service";
 import { NeoCard } from "@/components/neo/NeoCard";
@@ -27,8 +28,9 @@ function ProfileScreen() {
   const { profile, role } = useSession();
   const navigate = useNavigate();
   const cls = profile?.class ?? undefined;
+  const stream = profile?.stream ?? undefined;
   const subjectsQ = useQuery({
-    queryKey: ["subjects", cls],
+    queryKey: ["subjects", cls, stream],
     queryFn: () => listSubjects(cls),
     enabled: !!cls,
   });
@@ -55,7 +57,8 @@ function ProfileScreen() {
           {profile?.name ?? "Student"}
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Class {profile?.class ?? "—"} · Coaching notes and institute updates
+          {formatClassStream(profile?.class, profile?.stream ?? null)} · Coaching notes and institute
+          updates
         </p>
       </div>
 
@@ -75,11 +78,11 @@ function ProfileScreen() {
           <IconBadge tone="primary" className="mx-auto mb-2 h-11 w-11">
             <Shapes className="h-5 w-5" />
           </IconBadge>
-          <p className="font-display text-2xl font-bold text-success">
+          <p className="font-display text-xl font-bold leading-tight text-success">
             {profile?.class ?? "—"}
           </p>
           <p className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-            Your class
+            {profile?.stream ? formatStreamLabel(profile.stream) : "Your class"}
           </p>
         </NeoCard>
       </div>

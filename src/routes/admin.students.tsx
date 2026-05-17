@@ -12,6 +12,7 @@ import { ConfirmDestructiveDialog } from "@/components/neo/ConfirmDestructiveDia
 import { useSession } from "@/hooks/use-session";
 import { Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { formatClassStream } from "@/lib/stream-access";
 
 export const Route = createFileRoute("/admin/students")({
   component: StudentsScreen,
@@ -89,7 +90,7 @@ function StudentsScreen() {
                   <p className="font-display text-lg font-semibold text-foreground">{s.name}</p>
                   <p className="truncate text-sm text-muted-foreground">{s.email}</p>
                   <p className="mt-2 text-[11px] font-semibold uppercase tracking-wider text-primary">
-                    Class {s.class ?? "—"} · {s.approved ? "Approved" : "Pending approval"}
+                    {formatClassStream(s.class, s.stream)} · {s.approved ? "Approved" : "Pending approval"}
                     {isSelf ? " · You" : ""}
                   </p>
                 </div>

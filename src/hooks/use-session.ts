@@ -4,12 +4,14 @@ import { supabase } from "@/integrations/supabase/client";
 
 export type AppRole = "student" | "admin";
 export type ClassLevel = "9" | "10" | "11" | "12";
+export type StudentStream = "pcm" | "pcb" | "commerce";
 
 export interface Profile {
   id: string;
   name: string;
   email: string;
   class: ClassLevel | null;
+  stream: StudentStream | null;
   approved: boolean;
 }
 
@@ -29,7 +31,7 @@ export function useSession(): SessionState {
 
   const loadProfile = useCallback(async (uid: string) => {
     const [{ data: prof }, { data: roles }] = await Promise.all([
-      supabase.from("profiles").select("id,name,email,class,approved").eq("id", uid).maybeSingle(),
+      supabase.from("profiles").select("id,name,email,class,stream,approved").eq("id", uid).maybeSingle(),
       supabase.from("user_roles").select("role").eq("user_id", uid),
     ]);
     setProfile(prof as Profile | null);

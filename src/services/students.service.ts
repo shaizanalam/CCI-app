@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 export async function listPendingStudents() {
   const { data, error } = await supabase
     .from("profiles")
-    .select("id,name,email,class,approved,created_at")
+    .select("id,name,email,class,stream,approved,created_at")
     .eq("approved", false)
     .order("created_at", { ascending: false });
   if (error) throw error;
@@ -13,7 +13,7 @@ export async function listPendingStudents() {
 export async function listAllStudents() {
   const { data, error } = await supabase
     .from("profiles")
-    .select("id,name,email,class,approved,created_at")
+    .select("id,name,email,class,stream,approved,created_at")
     .order("created_at", { ascending: false });
   if (error) throw error;
   return data ?? [];

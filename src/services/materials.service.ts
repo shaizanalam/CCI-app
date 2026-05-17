@@ -1,19 +1,28 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { ClassLevel } from "@/hooks/use-session";
+import type { StreamAccess } from "@/lib/stream-access";
+import { defaultStreamAccessForClass } from "@/lib/stream-access";
 
 const BUCKET = "materials";
 
+const SUBJECT_COLUMNS = "id,name,class,stream_access,created_at";
+
 export async function listSubjects(classLevel?: ClassLevel) {
-  const q = supabase.from("subjects").select("id,name,class,created_at").order("name");
+  const q = supabase.from("subjects").select(SUBJECT_COLUMNS).order("name");
   const { data, error } = classLevel ? await q.eq("class", classLevel) : await q;
   if (error) throw error;
   return data ?? [];
 }
 
-export async function createSubject(name: string, classLevel: ClassLevel) {
+export async function createSubject(
+  name: string,
+  classLevel: ClassLevel,
+  streamAccess?: StreamAccess,
+) {
+  const access = streamAccess ?? defaultStreamAccessForClass(classLevel);
   const { data, error } = await supabase
     .from("subjects")
-    .insert({ name, class: classLevel })
+    .insert({ name, class: classLevel, stream_access: access })
     .select()
     .single();
   if (error) throw error;

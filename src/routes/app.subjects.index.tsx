@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { useSession } from "@/hooks/use-session";
+import { formatClassStream } from "@/lib/stream-access";
 import { listSubjects } from "@/services/materials.service";
 import { NeoCard } from "@/components/neo/NeoCard";
 import { PremiumHeader, SectionLabel } from "@/components/layout/PremiumHeader";
@@ -19,9 +20,10 @@ export const Route = createFileRoute("/app/subjects/")({
 function SubjectsScreen() {
   const { profile } = useSession();
   const cls = profile?.class ?? undefined;
+  const stream = profile?.stream ?? undefined;
   const [q, setQ] = useState("");
   const { data, isLoading } = useQuery({
-    queryKey: ["subjects", cls],
+    queryKey: ["subjects", cls, stream],
     queryFn: () => listSubjects(cls),
     enabled: !!cls,
   });
@@ -37,7 +39,7 @@ function SubjectsScreen() {
     <div className="space-y-6 pb-4">
       <PremiumHeader
         title="My subjects"
-        subtitle={`Everything for Class ${profile?.class ?? "—"} in one library.`}
+        subtitle={`Everything for ${formatClassStream(profile?.class, profile?.stream ?? null)} in one library.`}
         avatarLinkTo="/app/profile"
         avatarLabel={profile?.name ?? profile?.email ?? "You"}
       />

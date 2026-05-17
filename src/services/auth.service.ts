@@ -1,18 +1,32 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { ClassLevel } from "@/hooks/use-session";
+import type { ClassLevel, StudentStream } from "@/hooks/use-session";
+import { classNeedsStream } from "@/lib/stream-access";
 
 export async function signUp(input: {
   name: string;
   email: string;
   password: string;
   classLevel: ClassLevel;
+  stream?: StudentStream;
 }) {
+  if (classNeedsStream(input.classLevel) && !input.stream) {
+    throw new Error("Please select your stream (PCM, PCB, or Commerce).");
+  }
+
+  const metadata: Record<string, string> = {
+    name: input.name,
+    class: input.classLevel,
+  };
+  if (classNeedsStream(input.classLevel) && input.stream) {
+    metadata.stream = input.stream;
+  }
+
   const { data, error } = await supabase.auth.signUp({
     email: input.email,
     password: input.password,
     options: {
       emailRedirectTo: `${window.location.origin}/`,
-      data: { name: input.name, class: input.classLevel },
+      data: metadata,
     },
   });
   if (error) throw error;

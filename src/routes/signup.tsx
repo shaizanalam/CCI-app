@@ -9,7 +9,9 @@ import { NeoInput, FieldLabel } from "@/components/neo/NeoInput";
 import { ClassPills } from "@/components/neo/ClassPills";
 import { AuthThemeBar } from "@/components/layout/AuthThemeBar";
 import { BrandMark } from "@/components/layout/PremiumHeader";
-import type { ClassLevel } from "@/hooks/use-session";
+import type { ClassLevel, StudentStream } from "@/hooks/use-session";
+import { classNeedsStream, STREAM_OPTIONS } from "@/lib/stream-access";
+import { NeoSelect } from "@/components/neo/NeoInput";
 import { Eye, EyeOff, Lock, User, Mail } from "lucide-react";
 
 export const Route = createFileRoute("/signup")({
@@ -17,12 +19,23 @@ export const Route = createFileRoute("/signup")({
   component: SignupPage,
 });
 
-const schema = z.object({
-  name: z.string().trim().min(2, "Name is too short").max(80),
-  email: z.string().trim().email("Enter a valid email").max(255),
-  password: z.string().min(6, "At least 6 characters").max(128),
-  classLevel: z.enum(["9", "10", "11", "12"]),
-});
+const schema = z
+  .object({
+    name: z.string().trim().min(2, "Name is too short").max(80),
+    email: z.string().trim().email("Enter a valid email").max(255),
+    password: z.string().min(6, "At least 6 characters").max(128),
+    classLevel: z.enum(["9", "10", "11", "12"]),
+    stream: z.enum(["pcm", "pcb", "commerce"]).optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (classNeedsStream(data.classLevel) && !data.stream) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Please select your stream",
+        path: ["stream"],
+      });
+    }
+  });
 
 function SignupPage() {
   const navigate = useNavigate();
@@ -31,13 +44,17 @@ function SignupPage() {
     email: "",
     password: "",
     classLevel: "9" as ClassLevel,
+    stream: "" as StudentStream | "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const parsed = schema.safeParse(form);
+    const parsed = schema.safeParse({
+      ...form,
+      stream: form.stream || undefined,
+    });
     if (!parsed.success) {
       toast.error(parsed.error.issues[0]?.message ?? "Please check your input and try again");
       return;
@@ -128,9 +145,38 @@ function SignupPage() {
               <FieldLabel>Select class</FieldLabel>
               <ClassPills
                 value={form.classLevel}
-                onChange={(classLevel) => setForm({ ...form, classLevel })}
+                onChange={(classLevel) =>
+                  setForm({
+                    ...form,
+                    classLevel,
+                    stream: classNeedsStream(classLevel) ? form.stream : "",
+                  })
+                }
               />
             </div>
+            {classNeedsStream(form.classLevel) && (
+              <div>
+                <FieldLabel>Stream</FieldLabel>
+                <NeoSelect
+                  value={form.stream}
+                  onChange={(e) =>
+                    setForm({ ...form, stream: e.target.value as StudentStream })
+                  }
+                  required
+                >
+                  <option value="">Choose your stream…</option>
+                  {STREAM_OPTIONS.map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </NeoSelect>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  PCM: Physics, Chemistry, Maths · PCB: Physics, Chemistry, Biology · Commerce:
+                  commerce subjects only
+                </p>
+              </div>
+            )}
             <NeoButton
               type="submit"
               variant="primary"
